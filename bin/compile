@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 indent() {
   sed -u 's/^/       /'
@@ -17,8 +18,8 @@ cd jpegoptim-RELEASE.1.4.1
 ./configure
 make
 chmod +x jpegoptim
-mkdir -p $VENDOR_DIR/jpegoptim/bin
-cp jpegoptim $VENDOR_DIR/jpegoptim/bin/jpegoptim
+mkdir -p $BUILD_DIR/$VENDOR_DIR/jpegoptim/bin
+cp jpegoptim $BUILD_DIR/$VENDOR_DIR/jpegoptim/bin/jpegoptim
 
 echo "exporting PATH" | indent
 PROFILE_PATH="$BUILD_DIR/.profile.d/jpegoptim.sh"

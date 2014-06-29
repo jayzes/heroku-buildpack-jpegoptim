@@ -1,0 +1,26 @@
+#!/bin/sh
+
+indent() {
+  sed -u 's/^/       /'
+}
+
+echo "-----> Installing jpegoptim"
+BUILD_DIR=$1
+VENDOR_DIR="vendor"
+JPEGOPTIM_DOWNLOAD_URL="https://github.com/tjko/jpegoptim/archive/RELEASE.1.4.1.tar.gz"
+
+echo "JPEGOPTIM_DOWNLOAD_URL = " $JPEGOPTIM_DOWNLOAD_URL | indent
+
+cd $BUILD_DIR
+curl -L --silent -o jpegoptim/bin/jpegoptim $JPEGOPTIM_DOWNLOAD_URL
+cd jpegoptim-RELEASE.1.4.1
+./configure
+make
+chmod +x jpegoptim
+mkdir -p $VENDOR_DIR/jpegoptim/bin
+cp jpegoptim $VENDOR_DIR/jpegoptim/bin/jpegoptim
+
+echo "exporting PATH" | indent
+PROFILE_PATH="$BUILD_DIR/.profile.d/jpegoptim.sh"
+mkdir -p $(dirname $PROFILE_PATH)
+echo 'export PATH="$PATH:vendor/jpegoptim/bin"' >> $PROFILE_PATH

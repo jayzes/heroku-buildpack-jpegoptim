@@ -12,7 +12,7 @@ JPEGOPTIM_DOWNLOAD_URL="https://github.com/tjko/jpegoptim/archive/RELEASE.1.4.1.
 echo "JPEGOPTIM_DOWNLOAD_URL = " $JPEGOPTIM_DOWNLOAD_URL | indent
 
 cd $BUILD_DIR
-curl -L --silent -o jpegoptim/bin/jpegoptim $JPEGOPTIM_DOWNLOAD_URL
+curl -L --silent $JPEGOPTIM_DOWNLOAD_URL | tar -xzv
 cd jpegoptim-RELEASE.1.4.1
 ./configure
 make

@@ -44,6 +44,9 @@ else
   cp jpegoptim $JPEGOPTIM_CACHE_DIR
 fi
 
+echo "Testing jpegoptim binary" | arrow
+$BUILD_DIR/$VENDOR_DIR/jpegoptim/bin/jpegoptim -V | indent
+
 echo "Modifying PATH" | arrow
 PROFILE_PATH="$BUILD_DIR/.profile.d/jpegoptim.sh"
 mkdir -p $(dirname $PROFILE_PATH)

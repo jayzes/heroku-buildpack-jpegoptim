@@ -5,9 +5,13 @@ indent() {
   sed -u 's/^/       /'
 }
 
+arrow() {
+  sed -u 's/^/-----> /'
+}
+
 # Check for and clear jpegoptim binaries created by the Apt buildpack
 if [ -e /app/.apt/usr/bin/jpegoptim ]; then
-  echo "Clearing Apt-installed jpegoptim" | indent
+  echo "Clearing apt-installed jpegoptim" | indent
   rm /app/.apt/usr/bin/jpegoptim
 fi
 
@@ -18,11 +22,11 @@ JPEGOPTIM_DOWNLOAD_URL="https://github.com/tjko/jpegoptim/archive/RELEASE.1.4.1.
 JPEGOPTIM_CACHE_DIR="$CACHE_DIR/jpegoptim-cache"
 
 if [ -x "$JPEGOPTIM_CACHE_DIR/jpegoptim" ]; then
-  echo "-----> Using cached jpegoptim binary"
+  echo "Using cached jpegoptim binary" | arrow
   mkdir -p $BUILD_DIR/$VENDOR_DIR/jpegoptim/bin
   cp $JPEGOPTIM_CACHE_DIR/jpegoptim $BUILD_DIR/$VENDOR_DIR/jpegoptim/bin
 else
-  echo "-----> Building jpegoptim from source"
+  echo "Building jpegoptim from source" | arrow
   echo "JPEGOPTIM_DOWNLOAD_URL = " $JPEGOPTIM_DOWNLOAD_URL | indent
 
   cd $BUILD_DIR
@@ -40,7 +44,7 @@ else
   cp jpegoptim $JPEGOPTIM_CACHE_DIR
 fi
 
-echo "-----> Modifying PATH"
+echo "Modifying PATH" | arrow
 PROFILE_PATH="$BUILD_DIR/.profile.d/jpegoptim.sh"
 mkdir -p $(dirname $PROFILE_PATH)
 echo 'export PATH="$PATH:/app/vendor/jpegoptim/bin"' >> $PROFILE_PATH

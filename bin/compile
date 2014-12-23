@@ -29,4 +29,4 @@ fi
 echo "exporting PATH" | indent
 PROFILE_PATH="$BUILD_DIR/.profile.d/jpegoptim.sh"
 mkdir -p $(dirname $PROFILE_PATH)
-echo 'export PATH="$PATH:vendor/jpegoptim/bin"' >> $PROFILE_PATH
+echo 'export PATH="$PATH:/app/vendor/jpegoptim/bin"' >> $PROFILE_PATH

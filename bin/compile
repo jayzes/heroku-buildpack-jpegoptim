@@ -5,28 +5,39 @@ indent() {
   sed -u 's/^/       /'
 }
 
-echo "-----> Installing jpegoptim"
-BUILD_DIR=$1
-VENDOR_DIR="vendor"
-JPEGOPTIM_DOWNLOAD_URL="https://github.com/tjko/jpegoptim/archive/RELEASE.1.4.1.tar.gz"
-
-echo "JPEGOPTIM_DOWNLOAD_URL = " $JPEGOPTIM_DOWNLOAD_URL | indent
-
-cd $BUILD_DIR
-curl -L --silent $JPEGOPTIM_DOWNLOAD_URL | tar -xzv
-cd jpegoptim-RELEASE.1.4.1
-./configure
-make
-chmod +x jpegoptim
-mkdir -p $BUILD_DIR/$VENDOR_DIR/jpegoptim/bin
-cp jpegoptim $BUILD_DIR/$VENDOR_DIR/jpegoptim/bin/jpegoptim
-
+# Check for and clear jpegoptim binaries created by the Apt buildpack
 if [ -e /app/.apt/usr/bin/jpegoptim ]; then
   echo "Clearing Apt-installed jpegoptim" | indent
   rm /app/.apt/usr/bin/jpegoptim
 fi
 
-echo "exporting PATH" | indent
+BUILD_DIR=$1
+CACHE_DIR=$2
+VENDOR_DIR="vendor"
+JPEGOPTIM_DOWNLOAD_URL="https://github.com/tjko/jpegoptim/archive/RELEASE.1.4.1.tar.gz"
+CACHED_JPEGOPTIM_BINARY_PATH="$CACHE_DIR/jpegoptim-cache/jpegoptim"
+
+if [ -x $CACHED_JPEGOPTIM_BINARY_PATH ]; then
+  echo "-----> Using cached jpegoptim binary" | indent
+  mkdir -p $BUILD_DIR/$VENDOR_DIR/jpegoptim/bin
+  cp $CACHED_JPEGOPTIM_BINARY_PATH $BUILD_DIR/$VENDOR_DIR/jpegoptim/bin/jpegoptim
+else
+  echo "-----> Building jpegoptim from source" | indent
+  echo "JPEGOPTIM_DOWNLOAD_URL = " $JPEGOPTIM_DOWNLOAD_URL | indent
+
+  cd $BUILD_DIR
+  curl -L --silent $JPEGOPTIM_DOWNLOAD_URL | tar -xzv
+  cd jpegoptim-RELEASE.1.4.1
+  ./configure
+  make
+  chmod +x jpegoptim
+  mkdir -p $BUILD_DIR/$VENDOR_DIR/jpegoptim/bin
+  cp jpegoptim $BUILD_DIR/$VENDOR_DIR/jpegoptim/bin/jpegoptim
+  cp jpegoptim $CACHED_JPEGOPTIM_BINARY_PATH
+fi
+
+
+echo "-----> Modifying PATH" | indent
 PROFILE_PATH="$BUILD_DIR/.profile.d/jpegoptim.sh"
 mkdir -p $(dirname $PROFILE_PATH)
 echo 'export PATH="$PATH:/app/vendor/jpegoptim/bin"' >> $PROFILE_PATH

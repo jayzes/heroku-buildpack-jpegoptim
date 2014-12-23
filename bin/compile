@@ -15,12 +15,12 @@ BUILD_DIR=$1
 CACHE_DIR=$2
 VENDOR_DIR="vendor"
 JPEGOPTIM_DOWNLOAD_URL="https://github.com/tjko/jpegoptim/archive/RELEASE.1.4.1.tar.gz"
-CACHED_JPEGOPTIM_BINARY_PATH="$CACHE_DIR/jpegoptim-cache/jpegoptim"
+JPEGOPTIM_CACHE_DIR="$CACHE_DIR/jpegoptim-cache"
 
-if [ -x $CACHED_JPEGOPTIM_BINARY_PATH ]; then
+if [ -x "$JPEGOPTIM_CACHE_DIR/jpegoptim" ]; then
   echo "-----> Using cached jpegoptim binary"
   mkdir -p $BUILD_DIR/$VENDOR_DIR/jpegoptim/bin
-  cp $CACHED_JPEGOPTIM_BINARY_PATH $BUILD_DIR/$VENDOR_DIR/jpegoptim/bin/jpegoptim
+  cp $JPEGOPTIM_CACHE_DIR/jpegoptim $BUILD_DIR/$VENDOR_DIR/jpegoptim/bin
 else
   echo "-----> Building jpegoptim from source"
   echo "JPEGOPTIM_DOWNLOAD_URL = " $JPEGOPTIM_DOWNLOAD_URL | indent
@@ -31,11 +31,14 @@ else
   ./configure | indent
   make | indent
   chmod +x jpegoptim
+
   mkdir -p $BUILD_DIR/$VENDOR_DIR/jpegoptim/bin
   cp jpegoptim $BUILD_DIR/$VENDOR_DIR/jpegoptim/bin/jpegoptim
-  cp jpegoptim $CACHED_JPEGOPTIM_BINARY_PATH
-fi
 
+  # Store binary in cache to speedup future builds
+  mkdir -p $JPEGOPTIM_CACHE_DIR
+  cp jpegoptim $JPEGOPTIM_CACHE_DIR
+fi
 
 echo "-----> Modifying PATH" | indent
 PROFILE_PATH="$BUILD_DIR/.profile.d/jpegoptim.sh"

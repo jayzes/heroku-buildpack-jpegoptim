@@ -18,18 +18,18 @@ JPEGOPTIM_DOWNLOAD_URL="https://github.com/tjko/jpegoptim/archive/RELEASE.1.4.1.
 CACHED_JPEGOPTIM_BINARY_PATH="$CACHE_DIR/jpegoptim-cache/jpegoptim"
 
 if [ -x $CACHED_JPEGOPTIM_BINARY_PATH ]; then
-  echo "-----> Using cached jpegoptim binary" | indent
+  echo "-----> Using cached jpegoptim binary"
   mkdir -p $BUILD_DIR/$VENDOR_DIR/jpegoptim/bin
   cp $CACHED_JPEGOPTIM_BINARY_PATH $BUILD_DIR/$VENDOR_DIR/jpegoptim/bin/jpegoptim
 else
-  echo "-----> Building jpegoptim from source" | indent
+  echo "-----> Building jpegoptim from source"
   echo "JPEGOPTIM_DOWNLOAD_URL = " $JPEGOPTIM_DOWNLOAD_URL | indent
 
   cd $BUILD_DIR
   curl -L --silent $JPEGOPTIM_DOWNLOAD_URL | tar -xzv
   cd jpegoptim-RELEASE.1.4.1
-  ./configure
-  make
+  ./configure | indent
+  make | indent
   chmod +x jpegoptim
   mkdir -p $BUILD_DIR/$VENDOR_DIR/jpegoptim/bin
   cp jpegoptim $BUILD_DIR/$VENDOR_DIR/jpegoptim/bin/jpegoptim

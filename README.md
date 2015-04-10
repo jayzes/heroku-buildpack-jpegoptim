@@ -18,9 +18,13 @@ Then create an application using the multi buildpack:
 
     $ heroku create --buildpack https://github.com/ddollar/heroku-buildpack-multi
 
-or configure an existing application:
+If you want to add it to an existing application run:
 
-    $ heroku config BUILDPACK_URL=https://github.com/ddollar/heroku-buildpack-multi
+    $ heroku config:add BUILDPACK_URL=https://github.com/ddollar/heroku-buildpack-multi
+
+And then push the changes to Heroku to being the installation:
+
+    $ git push heroku master
 
 You can verify that everything is properly installed by running the following command:
 
